@@ -1,0 +1,3 @@
+A=10            # Quanti armstrong è lunga metà simulazione
+C=-11.1         # Efficacia del potenziale di collisione
+ut=5e-7         # Unità di tempo della simulazione

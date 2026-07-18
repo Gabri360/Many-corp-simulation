@@ -16,4 +16,6 @@ double deviazione_standard(double v[],int n);
 
 double myrand();
 
+void read_config(double  *A,double *C,double *ut);
+
 #endif
