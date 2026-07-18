@@ -2,10 +2,16 @@
 #include "../head/simlib.h"
 #include "../head/simlib_base.h"
 #include "../head/simlib_metodi.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 
-int main() {
+int main(int argc, char *argv[]) 
+{
     
+    if(argc<3)
+    {
+        printf("\n--------------------------\n--------HOW TO USE--------\n--------------------------\n\nenter the following parameters:\n\n");
+        printf("\t-Number of electron (e)\n\t-Number of proton (p)\n\n(recommended values 50<(e,p)<200)\n\n");
+        return 1;        
+    }
     glfwInit();
     
     GLFWwindow* window = glfwCreateWindow(1920, 1080, "sim", NULL, NULL);
@@ -19,8 +25,8 @@ int main() {
     ut;         //Unità di tempo della simulazione
     
     read_config(&A,&C,&ut);
-    int e=100;
-    int pr=100;
+    int e=atoi(argv[1]);
+    int pr=atoi(argv[2]);
     int sim_type=4;
     
     int n=e+pr;
@@ -41,6 +47,12 @@ int main() {
         glfwMakeContextCurrent(window);
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
+        
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS||glfwGetKey(graf, GLFW_KEY_Q) == GLFW_PRESS||glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS||glfwGetKey(graf, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+        
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         glEnable(GL_BLEND);
