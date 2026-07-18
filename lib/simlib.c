@@ -1,7 +1,6 @@
 #include "../head/simlib_struct.h"
 #include "../head/simlib.h"
 #include "../head/simlib_base.h"
-#include "../head/stb_image_write.h"
 
 
 double energy_e(obj p[],int n, double G,double C)
@@ -42,7 +41,7 @@ void init_P(obj p[],int e,int pr,double G,double C,double ke_init,double kp_init
 {
     double E=0;
     int v=1;
-    srand(time(NULL));
+    srand((unsigned int) time(NULL));
     while(1)
     {
         for(int i=0;i<e;i++){do
@@ -167,34 +166,4 @@ coord acc(double x[DIM], double qe,double m,int j, obj p[],int n,double G,double
     return a;
 }
 
-void saveFrame(GLFWwindow* window)
-{
-    static int frameNumber=0,l=0;
-    glfwMakeContextCurrent(window); 
-    int width=945, height=509;
-    glfwGetFramebufferSize(window, &width, &height);
-    width  = (width  / 2) * 2;
-    height = (height / 2) * 2;
-    if(l%10==0){
-    unsigned char pixels[width * height * 3];
-    glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-
-    const char* folder = "../frames/";
-    char filename[100];
-    sprintf(filename, "%sframe_%04d.ppm",folder, frameNumber);
-
-    FILE* f = fopen(filename, "wb");
-    fprintf(f, "P6\n%d %d\n255\n", width, height);
-    
-    for(int y = height-1; y >= 0; y--) {
-        fwrite(&pixels[y * width * 3], 1, width * 3, f);
-    }
-    fclose(f);
-    frameNumber++;
-    }
-    if (frameNumber >= MAX_FRAME+1)
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-    l++;
-}
 

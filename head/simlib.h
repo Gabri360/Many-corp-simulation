@@ -26,5 +26,4 @@ void force(obj p[],int n,int i,double G,double C);
 
 coord acc(double x[DIM], double q,double m,int j, obj p[],int n,double G,double C);
 
-void saveFrame(GLFWwindow* window);
 #endif

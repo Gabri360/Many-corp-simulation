@@ -27,7 +27,6 @@ void RK4(obj p[],int n,double dt,double G, double C)
     {
         coord k_q[4];
         coord k_v[4];
-        coord a;
         double temp[DIM];
         for(int q=0;q<DIM;q++)
         {
@@ -82,8 +81,8 @@ void RK4(obj p[],int n,double dt,double G, double C)
 void RK45(obj p[],int n,double *dt,double tol,double G, double C)
 {
     coord a;
-    state *y4=malloc(n*sizeof(state));
-    state *y5=malloc(n*sizeof(state));
+    state *y4=malloc((long unsigned int) n*sizeof(state));
+    state *y5=malloc((long unsigned int) n*sizeof(state));
     while(1){
     double error=0.0;
     for(int i=0;i<n;i++)

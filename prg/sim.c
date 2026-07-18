@@ -3,7 +3,6 @@
 #include "../head/simlib_base.h"
 #include "../head/simlib_metodi.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "../head/stb_image_write.h"
 
 int main() {
     
@@ -18,16 +17,17 @@ int main() {
     double  A,  //Quanti armstrong è lunga metà simulazione
     C,          //Efficacia del potenziale di collisione
     ut;         //Unità di tempo della simulazione
-
+    
     read_config(&A,&C,&ut);
-    int e=200;
-    int pr=200;
+    int e=100;
+    int pr=100;
+    int sim_type=4;
     
     int n=e+pr;
-    double dt=4e-7, G=2.3e-6/(A*ut*ut), E0, t=0, ke_init=1e2, kp_init=1e2, tol=10e-5;
+    double dt=9e-8, G=2.3e-6/(A*ut*ut), E0, t=0, ke_init=1e2, kp_init=1e2, tol=10e-5;
     circ E, err;
-    trail_o *trail=malloc(n*sizeof(trail_o));
-    obj *p = malloc(n * sizeof(obj));
+    trail_o *trail=malloc((long unsigned int) n*sizeof(trail_o));
+    obj *p = malloc((long unsigned int) n*sizeof(obj));
     init_P(p,e,pr,G,C,ke_init,kp_init,0);
     Init_trail(trail,n);
     Init_circ(&E);
@@ -52,7 +52,7 @@ int main() {
         for(int i=0;i<n;i++)
         {
             if(DIM>=4)
-            glPointSize(15.0*(p[i].x[3]+1.4)/2.4);
+            glPointSize((float) (15.0*(p[i].x[3]+1.4)/2.4));
             glBegin(GL_POINTS);
             if(DIM==2)
             glColor4d(p[i].colore[0],p[i].colore[1],p[i].colore[2],1.0);
@@ -104,10 +104,14 @@ int main() {
         
         //----------------------------------------------------------------------------------------------------------------        
         
-        
-        //verlet_v(p,n,dt,G,C);
-        //RK4(p,n,dt,G,C);
-        //eulero(p,n,dt,G,C);
+        if(sim_type==1)
+        eulero(p,n,dt,G,C);
+        verlet_v(p,n,dt,G,C);
+        if(sim_type==2)
+        verlet_v(p,n,dt,G,C);
+        if(sim_type==3)
+        RK4(p,n,dt,G,C);
+        if(sim_type==4)
         RK45(p,n,&dt,tol,G,C);
         
         if(t<MAX_ENERGY*3e-7)
@@ -120,10 +124,6 @@ int main() {
         printf("(%lf%%)----\t%e +- %e\t%e\n",fabs(std*100.0/md),md,std,dt);
         
         circ_agg(fabs(std*100.0/md), &err);
-        
-        //----------------------------------------------------------------------------------------------------------------        
-        
-        //saveFrame(window);
         
         
         glfwPollEvents();
