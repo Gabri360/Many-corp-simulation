@@ -1,5 +1,5 @@
 e=100           # Number of electron
-pr=100           # Number of proton
+pr=100          # Number of proton
 A=10            # How many angstroms long is half the simulation?
 C=-11.1         # Collision potential effectiveness
 ut=5e-7         # Simulation time unit

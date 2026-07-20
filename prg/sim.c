@@ -3,10 +3,29 @@
 #include "../head/simlib_base.h"
 #include "../head/simlib_metodi.h"
 
+int stop=0;
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    (void)window;
+    (void)scancode;
+    (void)mods;
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+        stop ^= 1;
+    }
+}
+
 int main(int argc, char *argv[]) 
 {
+    
+    if(argc<2)
+    {
+        printf("\n--------------------------\n--------HOW TO USE--------\n--------------------------\n\nenter the following parameter:\n\n");
+        printf("Ode resolving metods:\n\n\t-) 1 :Euler Method\n\t-) 2 :Verlet Velocity\n\t-) 3 :Runge Kutta 4\n\t-) 4 :Runge Kutta 45\n\n");
+        return 1;        
+    }
     int sim_type=argv[1][0] - '0';
-    if(argc<2||sim_type<1||sim_type>4)
+    if(sim_type<1||sim_type>4)
     {
         printf("\n--------------------------\n--------HOW TO USE--------\n--------------------------\n\nenter the following parameter:\n\n");
         printf("Ode resolving metods:\n\n\t-) 1 :Euler Method\n\t-) 2 :Verlet Velocity\n\t-) 3 :Runge Kutta 4\n\t-) 4 :Runge Kutta 45\n\n");
@@ -45,12 +64,12 @@ int main(int argc, char *argv[])
         glfwMakeContextCurrent(window);
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
-        
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS||glfwGetKey(graf, GLFW_KEY_Q) == GLFW_PRESS||glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS||glfwGetKey(graf, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
-        
+        glfwSetKeyCallback(window, key_callback);
+        glfwSetKeyCallback(graf, key_callback);
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         glEnable(GL_BLEND);
@@ -61,13 +80,13 @@ int main(int argc, char *argv[])
         
         for(int i=0;i<n;i++)
         {
-            if(DIM>=4)
-            glPointSize((float) (15.0*(p[i].x[3]+1.4)/2.4));
-            glBegin(GL_POINTS);
-            if(DIM==2)
-            glColor4d(p[i].colore[0],p[i].colore[1],p[i].colore[2],1.0);
             if(DIM>=3)
-            glColor4d(p[i].colore[0],p[i].colore[1],p[i].colore[2],(p[i].x[2]+1.4)/2.4);
+            glPointSize((float) (15.0*(p[i].x[2]+1.4)/2.4));
+            glBegin(GL_POINTS);
+            if(DIM>=2)
+            glColor4d(p[i].colore[0],p[i].colore[1],p[i].colore[2],1.0);
+            if(DIM>=4)
+            glColor4d(p[i].colore[0],p[i].colore[1],p[i].colore[2],(p[i].x[3]+1.4)/2.4);
             glVertex2d(p[i].x[0], p[i].x[1]); 
             glEnd();
             
@@ -77,7 +96,7 @@ int main(int argc, char *argv[])
             for (int j=0;j<trail[i].nb;j++) 
             {
                 int idx = (trail[i].head+j-trail[i].nb+MAX_TRAIL) % MAX_TRAIL;
-                if(DIM>=3)
+                if(DIM>=4)
                 glColor4d(p[i].colore[0], p[i].colore[1], p[i].colore[2],0.7*(trail[i].history[idx].x[2]+1.1)/2.1);
                 glVertex2d(trail[i].history[idx].x[0],trail[i].history[idx].x[1]);
             }
@@ -113,28 +132,29 @@ int main(int argc, char *argv[])
         glfwSwapBuffers(graf);
         
         //----------------------------------------------------------------------------------------------------------------        
-        
-        if(sim_type==1)
-        eulero(p,n,dt,G,C);
-        verlet_v(p,n,dt,G,C);
-        if(sim_type==2)
-        verlet_v(p,n,dt,G,C);
-        if(sim_type==3)
-        RK4(p,n,dt,G,C);
-        if(sim_type==4)
-        RK45(p,n,&dt,tol,G,C);
-        
-        if(t<MAX_ENERGY*3e-7)
-        t+=3e-7;
-        trail_agg(p,n,trail);
-        
-        circ_agg(energy_e(p,n,G,C),&E);
-        
-        double md=media(E.history,E.nb),std=deviazione_standard(E.history,E.nb);
-        printf("(%lf%%)----\t%e +- %e\t%e\n",fabs(std*100.0/md),md,std,dt);
-        
-        circ_agg(fabs(std*100.0/md), &err);
-        
+        if(stop==0)
+        {
+            if(sim_type==1)
+            eulero(p,n,dt,G,C);
+            verlet_v(p,n,dt,G,C);
+            if(sim_type==2)
+            verlet_v(p,n,dt,G,C);
+            if(sim_type==3)
+            RK4(p,n,dt,G,C);
+            if(sim_type==4)
+            RK45(p,n,&dt,tol,G,C);
+            
+            if(t<MAX_ENERGY*3e-7)
+            t+=3e-7;
+            trail_agg(p,n,trail);
+            
+            circ_agg(energy_e(p,n,G,C),&E);
+            
+            double md=media(E.history,E.nb),std=deviazione_standard(E.history,E.nb);
+            printf("(%lf%%)----\t%e +- %e\t%e\n",fabs(std*100.0/md),md,std,dt);
+            
+            circ_agg(fabs(std*100.0/md), &err);
+        }
         
         glfwPollEvents();
     }
