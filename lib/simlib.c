@@ -119,29 +119,6 @@ void circ_agg(double v, circ *E)
                 E->nb++;
 }
 
-void force(obj p[],int n,int i,double G,double C)
-{
-    double s=5;
-    for(int q=0;q<DIM;q++)
-    {
-        p[i].a[q]=0;
-    }
-    for(int j=0;j<n;j++)
-    {
-        if(i!=j)
-        {
-            double d=dist(p[i],p[j]);
-            
-                for(int q=0;q<DIM;q++)
-                {
-                    p[i].a[q]-=G*p[j].q*p[i].q*(p[j].x[q]-p[i].x[q])/(p[i].m*d*d*d);
-                    p[i].a[q]-=pow(10,C)*(p[j].x[q]-p[i].x[q])*(12*pow(s/d,14)/(s*s))/(G*p[i].m);
-                }
-        }
-    }
-}
-
-
 coord acc(double x[DIM], double qe,double m,int j, obj p[],int n,double G,double C)
 {
     coord a;

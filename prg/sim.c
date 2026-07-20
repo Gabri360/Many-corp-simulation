@@ -5,11 +5,11 @@
 
 int main(int argc, char *argv[]) 
 {
-    
-    if(argc<3)
+    int sim_type=argv[1][0] - '0';
+    if(argc<2||sim_type<1||sim_type>4)
     {
-        printf("\n--------------------------\n--------HOW TO USE--------\n--------------------------\n\nenter the following parameters:\n\n");
-        printf("\t-Number of electron (e)\n\t-Number of proton (p)\n\n(recommended values 50<(e,p)<200)\n\n");
+        printf("\n--------------------------\n--------HOW TO USE--------\n--------------------------\n\nenter the following parameter:\n\n");
+        printf("Ode resolving metods:\n\n\t-) 1 :Euler Method\n\t-) 2 :Verlet Velocity\n\t-) 3 :Runge Kutta 4\n\t-) 4 :Runge Kutta 45\n\n");
         return 1;        
     }
     glfwInit();
@@ -20,14 +20,12 @@ int main(int argc, char *argv[])
     
     
     
-    double  A,  //Quanti armstrong è lunga metà simulazione
-    C,          //Efficacia del potenziale di collisione
-    ut;         //Unità di tempo della simulazione
+    double  A,  //How many angstroms long is half the simulation?
+    C,          //Collision potential effectiveness
+    ut;         //Simulation time unit
+    int e,pr;
+    read_config(&e,&pr,&A,&C,&ut);
     
-    read_config(&A,&C,&ut);
-    int e=atoi(argv[1]);
-    int pr=atoi(argv[2]);
-    int sim_type=4;
     
     int n=e+pr;
     double dt=9e-8, G=2.3e-6/(A*ut*ut), E0, t=0, ke_init=1e2, kp_init=1e2, tol=10e-5;

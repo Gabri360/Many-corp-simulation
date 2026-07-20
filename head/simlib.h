@@ -22,8 +22,6 @@ void trail_agg(obj p[],int n, trail_o trail[]);
 
 void circ_agg(double v, circ *E);
 
-void force(obj p[],int n,int i,double G,double C);
-
 coord acc(double x[DIM], double q,double m,int j, obj p[],int n,double G,double C);
 
 #endif
