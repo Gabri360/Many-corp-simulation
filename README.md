@@ -8,6 +8,8 @@ I wrote this project to simulate the motion of n bodies (where n is an arbitrary
 ## Dependencies and project usage
 The project is written entirely in C and requires the `make` and `gcc` software. It also uses the OpenGL library `<GLFW/glfw3.h>`. This can be downloaded either from the official repositories (on Linux) or from the website: https://www.glfw.org/download.html
 
+git submodule update --init --recursive
+
 ---
 Once the files are been downloaded, you need to enter the folder `Many-corp-simulation/` and start the compilation with the command:  
 
